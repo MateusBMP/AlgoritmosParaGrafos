@@ -20,6 +20,7 @@ void liberarVizinho(Vizinho *v);
 Grafo * buscarVertice(Grafo *g, int id);
 Grafo * inserirVertice(Grafo *g, int id);
 Vizinho * buscarAresta(Grafo *g, int v1, int v2);
-void inserirAresta(Grafo *g, int v1, int v2, int peso);
+Grafo * inserirAresta(Grafo *g, int v1, int v2, int peso);
+Grafo * clonar(Grafo *g);
 
 #endif

@@ -73,7 +73,7 @@ Vizinho * buscarAresta(Grafo *g, int v1, int v2) {
     return v;
 }
 
-void inserirAresta(Grafo *g, int v1, int v2, int peso) {
+Grafo * inserirAresta(Grafo *g, int v1, int v2, int peso) {
     Vizinho * v = buscarAresta(g, v1, v2);
 
     if (v == NULL) {
@@ -84,4 +84,20 @@ void inserirAresta(Grafo *g, int v1, int v2, int peso) {
         novaAresta->prox = p->prim_vizinho;
         p->prim_vizinho = novaAresta;
     }
+
+    return g;
+}
+
+Grafo * clonar(Grafo *g) {
+    static Grafo * novoGrafo;
+    novoGrafo = inicializar();
+    novoGrafo = inserirVertice(novoGrafo, g->id);
+    
+    Vizinho * v_aux = g->prim_vizinho;
+    while(v_aux != NULL) {
+        inserirAresta(g, novoGrafo->id, v_aux->id, v_aux->peso);
+        v_aux = v_aux->prox;
+    }
+
+    return novoGrafo;
 }
