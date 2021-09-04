@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "grafo.h"
 
 Grafo * inicializar() {
@@ -15,7 +16,7 @@ void imprimir(Grafo *g) {
             v = v->prox;
         }
         printf("\n\n");
-        imprime(g->prox);
+        imprimir(g->prox);
     }
 }
 
