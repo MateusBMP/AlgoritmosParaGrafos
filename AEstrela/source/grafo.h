@@ -13,14 +13,18 @@ typedef struct grafo {
     struct grafo *prox;
 } Grafo;
 
-Grafo * inicializar();
-void imprimir(Grafo *g);
-void liberarGrafo(Grafo *g);
-void liberarVizinho(Vizinho *v);
-Grafo * buscarVertice(Grafo *g, int id);
-Grafo * inserirVertice(Grafo *g, int id);
-Vizinho * buscarAresta(Grafo *g, int v1, int v2);
-Grafo * inserirAresta(Grafo *g, int v1, int v2, int peso);
-Grafo * clonar(Grafo *g);
+typedef struct grafo_service {
+    Grafo *(*inicializar)();
+    void (*imprimir)(Grafo *g);
+    void (*liberarVizinho)(Vizinho *v);
+    void (*liberarGrafo)(Grafo *g);
+    Grafo *(*buscarVertice)(Grafo *g, int id);
+    Grafo *(*inserirVertice)(Grafo *g, int id);
+    Vizinho *(*buscarAresta)(Grafo *g, int v1, int v2);
+    Grafo *(*inserirAresta)(Grafo *g, int v1, int v2, int peso);
+    Grafo *(*clonar)(Grafo *g);
+} GrafoService;
+
+extern const GrafoService grafoService;
 
 #endif

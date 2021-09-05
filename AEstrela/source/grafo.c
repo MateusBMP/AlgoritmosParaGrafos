@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include "grafo.h"
 
-Grafo * inicializar() {
+static Grafo * inicializar() {
     return NULL;
 }
 
-void imprimir(Grafo *g) {
+static void imprimir(Grafo *g) {
     if (g != NULL) {
         printf("Vertice %d\n", g->id);
         printf("Vizinhos: ");
@@ -16,35 +16,35 @@ void imprimir(Grafo *g) {
             v = v->prox;
         }
         printf("\n\n");
-        imprimir(g->prox);
+        grafoService.imprimir(g->prox);
     }
 }
 
-void liberarGrafo(Grafo *g) {
+static void liberarGrafo(Grafo *g) {
     if (g != NULL) {
-        liberarVizinho(g->prim_vizinho);
-        liberarGrafo(g->prox);
+        grafoService.liberarVizinho(g->prim_vizinho);
+        grafoService.liberarGrafo(g->prox);
         free(g);
     }
 }
 
-void liberarVizinho(Vizinho *v) {
+static void liberarVizinho(Vizinho *v) {
     if (v != NULL) {
-        liberarVizinho(v->prox);
+        grafoService.liberarVizinho(v->prox);
         free(v);
     }
 }
 
-Grafo * buscarVertice(Grafo *g, int id) {
+static Grafo * buscarVertice(Grafo *g, int id) {
     if (g != NULL && g->id != id) {
-        return buscarVertice(g->prox, id);
+        return grafoService.buscarVertice(g->prox, id);
     }
 
     return g;
 }
 
-Grafo * inserirVertice(Grafo *g, int id) {
-    Grafo * p = buscarVertice(g, id);
+static Grafo * inserirVertice(Grafo *g, int id) {
+    Grafo * p = grafoService.buscarVertice(g, id);
 
     if (p == NULL) {
         p = (Grafo*) malloc(sizeof(Grafo));
@@ -58,9 +58,9 @@ Grafo * inserirVertice(Grafo *g, int id) {
     return g;
 }
 
-Vizinho * buscarAresta(Grafo *g, int v1, int v2) {
-    Grafo * pv1 = buscarVertice(g, v1);
-    Grafo * pv2 = buscarVertice(g, v2);
+static Vizinho * buscarAresta(Grafo *g, int v1, int v2) {
+    Grafo * pv1 = grafoService.buscarVertice(g, v1);
+    Grafo * pv2 = grafoService.buscarVertice(g, v2);
     Vizinho * v = NULL;
 
     if ((pv1 != NULL) && (pv2 != NULL)) {
@@ -73,11 +73,11 @@ Vizinho * buscarAresta(Grafo *g, int v1, int v2) {
     return v;
 }
 
-Grafo * inserirAresta(Grafo *g, int v1, int v2, int peso) {
-    Vizinho * v = buscarAresta(g, v1, v2);
+static Grafo * inserirAresta(Grafo *g, int v1, int v2, int peso) {
+    Vizinho * v = grafoService.buscarAresta(g, v1, v2);
 
     if (v == NULL) {
-        Grafo * p = buscarVertice(g, v1);
+        Grafo * p = grafoService.buscarVertice(g, v1);
         Vizinho * novaAresta = (Vizinho *) malloc(sizeof(Vizinho));
         novaAresta->id = v2;
         novaAresta->peso = peso;
@@ -88,16 +88,28 @@ Grafo * inserirAresta(Grafo *g, int v1, int v2, int peso) {
     return g;
 }
 
-Grafo * clonar(Grafo *g) {
+static Grafo * clonar(Grafo *g) {
     static Grafo * novoGrafo;
-    novoGrafo = inicializar();
-    novoGrafo = inserirVertice(novoGrafo, g->id);
+    novoGrafo = grafoService.inicializar();
+    novoGrafo = grafoService.inserirVertice(novoGrafo, g->id);
     
     Vizinho * v_aux = g->prim_vizinho;
     while(v_aux != NULL) {
-        inserirAresta(g, novoGrafo->id, v_aux->id, v_aux->peso);
+        grafoService.inserirAresta(novoGrafo, novoGrafo->id, v_aux->id, v_aux->peso);
         v_aux = v_aux->prox;
     }
 
     return novoGrafo;
 }
+
+const GrafoService grafoService = {
+    inicializar,
+    imprimir,
+    liberarVizinho,
+    liberarGrafo,
+    buscarVertice,
+    inserirVertice,
+    buscarAresta,
+    inserirAresta,
+    clonar
+};
